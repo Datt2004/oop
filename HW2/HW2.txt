@@ -1,0 +1,139 @@
+using System;
+namespace Input_and_display_Person_Info
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("===== Management Person Programer =====");
+            Console.Write("Enter the number of person: ");
+            int n = int.Parse(Console.ReadLine());
+            Person[] person = new Person[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                Console.WriteLine($"\nEnter information for Person {i + 1}:");
+                person[i] = Person.InputPersonInfo();
+            }
+
+            try
+            {
+                person = Person.SortBySalary(person);
+
+                foreach (var ps in person)
+                {
+                    Person.DisplayPersonInfo(ps);
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        
+    }
+    class Person
+    {
+        private string name;
+        private string address;
+        private double salary;
+
+        public Person(string name, string address, double salary)
+        {
+            this.name = name;
+            this.address = address;
+            this.salary = salary;
+        }
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public string Address
+        {
+            get { return address; }
+            set { address = value; }
+        }
+
+        public double Salary
+        {
+            get { return salary; }
+            set { salary = value; }
+        }
+        public static Person InputPersonInfo()
+        {
+            Console.Write("Please input name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Please input address: ");
+            string address = Console.ReadLine();
+
+            double salary;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Please input salary: ");
+                    string sSalary = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(sSalary))
+                    {
+                        throw new Exception("You must input Salary.");
+                    }
+
+                    if (!double.TryParse(sSalary, out salary))
+                    {
+                        throw new Exception("You must input a valid number for Salary.");
+                    }
+
+                    if (salary <= 0)
+                    {
+                        throw new Exception("Salary must be greater than zero.");
+                    }
+
+                    break; // Break out of the loop when valid input is provided
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{ex.Message}");
+                    // The loop will continue, prompting the user for input again.
+                }
+            }
+            return new Person(name, address, salary);
+        }
+
+        public static void DisplayPersonInfo(Person person)
+        {
+            Console.WriteLine("\nInformation of Person you have entered: ");
+            Console.WriteLine($"Name: {person.Name}");
+            Console.WriteLine($"Address: {person.Address}");
+            Console.WriteLine($"Salary: {person.Salary}");
+        }
+        public static Person[] SortBySalary(Person[] people)  //using Bubbles sort
+        {
+            try
+            {
+                for (int i = 0; i < people.Length - 1; i++)
+                {
+                    for (int j = 0; j < people.Length - i - 1; j++)
+                    {
+                        if (people[j].Salary > people[j + 1].Salary)
+                        {
+                            Person temp = people[j];   //assign a new temp variable 
+                            people[j] = people[j + 1]; //if salary of people[j] > j+1, swap them. 
+                            people[j + 1] = temp; //Then, put the variable in temp to j+1
+                        }
+                    }
+                }
+                return people; //return sorted salary array
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can't Sort Person");
+            }
+        }
+
+    }
+}
